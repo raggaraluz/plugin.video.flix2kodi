@@ -9,22 +9,22 @@ then
     CMD="alt+F4"
 elif [ "$1" = "pause" ];
 then
-    /usr/bin/xdotool windowactivate --sync $HANDLE mousemove 960 450
-    sleep 0.2
-    /usr/bin/xdotool windowactivate --sync $HANDLE click 1
+    #/usr/bin/xdotool windowactivate --sync $HANDLE mousemove 960 450
+    #sleep 0.2
+    #/usr/bin/xdotool windowactivate --sync $HANDLE click 1
     CMD="space"
 elif [ "$1" = "backward" ];
 then
-    CMD="Left space"
+    CMD="Left"
 elif [ "$1" = "down" ];
 then
-    CMD="Left Left space"
+    CMD="Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left Left"
 elif [ "$1" = "forward" ];
 then
-    CMD="Right space"
+    CMD="Right"
 elif [ "$1" = "up" ];
 then
-    CMD="Right Right space"
+    CMD="Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right Right"
 
 elif [ "$1" = "toggle_lang0" ];
 then

@@ -22,7 +22,7 @@ if generic_utility.android():
 
 video_infos1 = '["availability","bookmarkPosition","details","episodeCount","maturity",' \
                '"queue","releaseYear","requestId","runtime","seasonCount","summary","title","userRating","watched","hd"]'
-video_infos2 = '"current",["summary","runtime","bookmarkPosition","creditsOffset","title"]'
+video_infos2 = '["summary","runtime","bookmarkPosition","creditsOffset","title"]'
 video_infos3 = '"seasonList","current",["showMemberType","summary"]'
 video_infos4 = '"boxarts",["_665x375","_342x192"],"jpg"'
 
@@ -46,9 +46,12 @@ def viewing_activity_matches(video_type):
             seriesTitle = ""
 
         video_id = unicode(match['movieID'])
-        if video_type == metadata_type:
+        if video_type == 'dynamic' or video_type == metadata_type:
             metadatas[video_id] = {'topNodeId': match['topNodeId'], 'seriesTitle': seriesTitle, 'dateStr': match['dateStr']}
             videos_str += video_id + ','
+
+    if videos_str == '':
+        return []
 
     videos_str = videos_str[:-1]
     path1 = path('"videos"', '[' + videos_str + ']', video_infos1)
@@ -111,19 +114,17 @@ def videos_in_genre(genre_to_browse, page):
     return rets
 
 def videos_in_search(search_str):
-    path1 = path('"search"', '"' + search_str + '"', '"titles"', from_to(0,99), video_infos1)
-    path2 = path('"search"', '"' + search_str + '"', '"titles"', from_to(0,99), video_infos2)
-    path3 = path('"search"', '"' + search_str + '"', '"titles"', from_to(0,99), video_infos3)
-    path4 = path('"search"', '"' + search_str + '"', '"titles"', from_to(0,99), video_infos4)
+    path1 = path('"search"', '"byTerm"', '"|' + search_str + '"', '"titles"', '99', from_to(0,99), '"reference"', video_infos1)
+    path2 = path('"search"', '"byTerm"', '"|' + search_str + '"', '"titles"', '99', from_to(0,99), '"reference"', video_infos2)
+    path3 = path('"search"', '"byTerm"', '"|' + search_str + '"', '"titles"', '99', from_to(0,99), video_infos3)
+    path4 = path('"search"', '"byTerm"', '"|' + search_str + '"', '"titles"', '99', from_to(0,99), '"reference"', video_infos4)
     ret = req_json_path(path1, path2, path3, path4)
     filter_empty(ret)
     rets = []
     if 'search' in ret:
         search = ret['search']
-        search_node = child(search_str, search)
-        for video_ref in search_node['titles']:
-            if search_node['titles'][video_ref][0] == 'videos':
-                parsed = video_parser.parse_video(ret['videos'][search_node['titles'][video_ref][1]], search_node['titles'][video_ref][1])
+        for video_ref in ret[u'videos']:
+                parsed = video_parser.parse_video(ret['videos'][video_ref], video_ref)
                 rets.append(parsed)
     return rets
 
